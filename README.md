@@ -35,6 +35,13 @@ tests/
 ## Changelog
 
 ### 2026-06-30 (latest)
+- Fixed `main.c`: configured PA4 as GPIO push-pull output and drive high on init so W25Q128 CS starts deasserted
+- Fixed `main.c`: `init_ok` flag prevents "All peripherals initialized" from printing if any init failed
+- Fixed `w25q128.c`: added page boundary check to `W25Q128_Write` to prevent silent data corruption
+- Fixed `w25q128.c`: wrapped `HAL_SPI_Transmit` and `HAL_SPI_Receive` in `W25Q128_Read` with error checks and CS high on failure
+- Fixed `w25q128.c`: initialised `buffer` to `0x01` in `W25Q128_WaitBusy` to prevent false ready on SPI failure
+
+### 2026-06-30
 - Added JEDEC ID verification to `W25Q128_Init`: sends `0x9F`, reads manufacturer byte, returns `HAL_ERROR` if not `0xEF`
 - Removed `uart.c` / `uart.h` wrapper driver; replaced `UART_Print` calls in `main.c` with direct `HAL_UART_Transmit`
 

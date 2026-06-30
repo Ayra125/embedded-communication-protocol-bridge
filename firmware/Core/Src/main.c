@@ -105,19 +105,26 @@ int main(void)
   MX_SPI1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+uint8_t init_ok = 1;
 if (MPU6050_Init(&hi2c1) != HAL_OK)
 {
     HAL_UART_Transmit(&huart2, (uint8_t*)"MPU6050 Init Failed\r\n", strlen("MPU6050 Init Failed\r\n"), 100);
+    init_ok = 0;
 }
 if (W25Q128_Init(&hspi1) != HAL_OK)
 {
     HAL_UART_Transmit(&huart2, (uint8_t*)"W25Q128 Init Failed\r\n", strlen("W25Q128 Init Failed\r\n"), 100);
+    init_ok = 0;
 }
 if (SSD1306_Init(&hi2c1) != HAL_OK)
 {
     HAL_UART_Transmit(&huart2, (uint8_t*)"SSD1306 Init Failed\r\n", strlen("SSD1306 Init Failed\r\n"), 100);
+    init_ok = 0;
 }
-HAL_UART_Transmit(&huart2, (uint8_t*)"All peripherals initialized\r\n", strlen("All peripherals initialized\r\n"), 100);
+if (init_ok)
+{
+    HAL_UART_Transmit(&huart2, (uint8_t*)"All peripherals initialized\r\n", strlen("All peripherals initialized\r\n"), 100);
+}
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -294,11 +301,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
-  /*GPIO_InitTypeDef GPIO_InitStruct = {0};
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW; */
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
   /* USER CODE END MX_GPIO_Init_2 */
 }
 
